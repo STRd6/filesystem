@@ -1,31 +1,33 @@
 Filesystem
 ==========
 
+    Compressor = require("compression")
+
 Chrome filesystem for storing persistent files.
 
-Polyfill.
-
-    requestFileSystem  = window.requestFileSystem or window.webkitRequestFileSystem
-
-Get a filesystem for storage.
+    requestFileSystem = window.requestFileSystem or window.webkitRequestFileSystem
+    storageInfo = navigator.webkitPersistentStorage
 
 Size is is MB.
+
+    MB = 1024 * 1024
 
     log = (args...) ->
       console.log args...
 
-    getStorage = (size=10, success=log) ->
-      window.webkitStorageInfo.requestQuota PERSISTENT, size * 1024, (grantedBytes) ->
-        console.log grantedBytes
-        
-        if grantedBytes > 0
-          requestFileSystem PERSISTENT, grantedBytes, success
-      , (e) ->
-        console.log e
+    module.exports =
+
+Get a filesystem for storage if the use accepts the prompt.
+
+      getStorage: (size=1, success=log) ->
+        storageInfo.requestQuota size * MB, (grantedBytes) ->
+          console.log grantedBytes
+
+          if grantedBytes > 0
+            requestFileSystem PERSISTENT, grantedBytes, success
+        , log
 
 Query the usage status of the filesystem.
 
-    status = ->
-      window.webkitStorageInfo.queryUsageAndQuota PERSISTENT, (usage, quota) ->
-        console.log usage, quota
-
+      status: ->
+        storageInfo.queryUsageAndQuota log
