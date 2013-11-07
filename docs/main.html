@@ -32,11 +32,9 @@
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Chrome filesystem for storing persistent files.</p>
-<p>Polyfill.</p>
-
+              
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">requestFileSystem  = window.requestFileSystem <span class="keyword">or</span> window.webkitRequestFileSystem</code></pre>
+            <div class="content"><pre><code class="lang-coffeescript">Compressor = require(<span class="string">"compression"</span>)</code></pre>
 </div>
         </li>
         
@@ -46,21 +44,11 @@
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>Get a filesystem for storage.</p>
-<p>Size is is MB.</p>
+              <p>Chrome filesystem for storing persistent files.</p>
 
             </div>
-            <div class="content"><pre><code class="lang-coffeescript"><span class="function"><span class="title">log</span></span> = (args...) -&gt;
-  console.log args...
-
-<span class="function"><span class="title">getStorage</span></span> = (size=<span class="number">10</span>, success=log) -&gt;
-  window.webkitStorageInfo.requestQuota PERSISTENT, size * <span class="number">1024</span>, (grantedBytes) -&gt;
-    console.log grantedBytes
-
-    <span class="keyword">if</span> grantedBytes &gt; <span class="number">0</span>
-      requestFileSystem PERSISTENT, grantedBytes, success
-  , (e) -&gt;
-    console.log e</code></pre>
+            <div class="content"><pre><code class="lang-coffeescript">requestFileSystem = window.requestFileSystem <span class="keyword">or</span> window.webkitRequestFileSystem
+storageInfo = navigator.webkitPersistentStorage</code></pre>
 </div>
         </li>
         
@@ -70,12 +58,48 @@
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
+              <p>Size is is MB.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">MB = <span class="number">1024</span> * <span class="number">1024</span>
+
+<span class="function"><span class="title">log</span></span> = (args...) -&gt;
+  console.log args...
+
+module.exports =</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Get a filesystem for storage if the use accepts the prompt.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">  getStorage: (size=<span class="number">1</span>, success=log) -&gt;
+    storageInfo.requestQuota size * MB, (grantedBytes) -&gt;
+      console.log grantedBytes
+
+      <span class="keyword">if</span> grantedBytes &gt; <span class="number">0</span>
+        requestFileSystem PERSISTENT, grantedBytes, success
+    , log</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
               <p>Query the usage status of the filesystem.</p>
 
             </div>
-            <div class="content"><pre><code class="lang-coffeescript"><span class="function"><span class="title">status</span></span> = -&gt;
-  window.webkitStorageInfo.queryUsageAndQuota PERSISTENT, (usage, quota) -&gt;
-    console.log usage, quota</code></pre>
+            <div class="content"><pre><code class="lang-coffeescript">  status: -&gt;
+    storageInfo.queryUsageAndQuota log</code></pre>
 </div>
         </li>
         
